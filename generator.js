@@ -601,9 +601,52 @@ const fileWalker = ({dir, outFile, ignores}, {verbose, dryrun}) => {
 	})
 }
 
-const entry = ({dir = '.', outFile = 'ef.hpp', ignores = [], extraTypeDef = '.eftypedef'}, {verbose, dryrun}) => {
+const singleFileWalker = ({file, outFile}, {verbose, dryrun}) => {
+	const realOutPath = path.resolve(outFile)
+
+	if (verbose || dryrun) console.log('[V] Output file full path:', outFile)
+
+	const files = []
+
+	const filePath = file
+	if (verbose || dryrun) console.log('[V] Reading file:', filePath)
+	fs.readFile(filePath, 'utf8', (err, source) => {
+		if (err) throw err
+		console.log('Processing', filePath, '...')
+
+		const fileName = path.basename(filePath)
+		const className = camelCase(fileName, {pascalCase: true})
+
+		if (verbose || dryrun) {
+			console.log('[V] File name:', fileName)
+			console.log('[V] Generated class name:', className)
+		}
+
+		files.push({className, source})
+
+		if (verbose || dryrun) console.log('[V] Generating header file to:', realOutPath)
+		if (dryrun) {
+			console.log('All done.')
+			console.log(`All templates are NOT generated in \`${realOutPath}'.  (--dryrun)`)
+			return
+		}
+		fs.ensureDir(path.dirname(realOutPath), (err) => {
+			if (err) throw err
+			fs.outputFile(realOutPath, generate(files), (err) => {
+				if (err) throw err
+				console.log('All done.')
+				console.log(`All templates are generated in \`${realOutPath}'.`)
+			})
+		})
+	})
+}
+
+const entry = ({dir = '.', file = '', outFile = 'ef.hpp', ignores = [], extraTypeDef = '.eftypedef'}, {verbose, dryrun}) => {
 	if (verbose || dryrun) {
-		console.log('[V] Scan dir:', dir)
+		if(file)
+			console.log('[V] Input file:', file)
+		else
+			console.log('[V] Scan dir:', dir)
 		console.log('[V] Output file:', outFile)
 		console.log('[V] Ignored folder(s):', ignores)
 		console.log('[V] Extra param type def:', extraTypeDef)
@@ -622,10 +665,18 @@ const entry = ({dir = '.', outFile = 'ef.hpp', ignores = [], extraTypeDef = '.ef
 				if (def.DOUBLEPROPS) for (let i of def.DOUBLEPROPS) DOUBLEPROPS.add(i)
 			}
 
-
-			fileWalker({dir, outFile, ignores}, {verbose, dryrun})
+			
+			if(file)
+				singleFileWalker({file, outFile, ignores}, {verbose, dryrun})
+			else
+				fileWalker({dir, outFile, ignores}, {verbose, dryrun})
 		})
-	} else fileWalker({dir, outFile, ignores}, {verbose, dryrun})
+	} else {
+		if(file)
+			singleFileWalker({file, outFile, ignores}, {verbose, dryrun})
+		else
+			fileWalker({dir, outFile, ignores}, {verbose, dryrun})
+	}
 }
 
 module.exports = entry

@@ -32,6 +32,13 @@ yargs
 		describe: 'scan from which folder',
 		type: 'string'
 	})
+	.option('f', {
+		alias: 'file',
+		demandOption: false,
+		default: '',
+		describe: 'input file',
+		type: 'string'
+	})
 	.option('o', {
 		alias: 'output',
 		demandOption: false,
@@ -54,7 +61,7 @@ yargs
 		type: 'string'
 	})
 }, (argv) => {
-	generate({dir: argv.dir, outFile: argv.output, ignores: argv.ignore, extraTypeDef: argv.extra}, {verbose: argv.verbose, dryrun: argv.dryrun})
+	generate({dir: argv.dir, file: argv.file, outFile: argv.output, ignores: argv.ignore, extraTypeDef: argv.extra}, {verbose: argv.verbose, dryrun: argv.dryrun})
 })
 .option('v', {
 	alias: 'verbose',
