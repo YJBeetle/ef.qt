@@ -498,6 +498,20 @@ const checkIncludes = (source, $includes) => {
 	}
 }
 
+const checkNameSpace = (source) => {
+	const lines = source.split(/\r?\n/)
+
+	for (let line of lines) {
+		const lineContent = line.trim()
+		if (lineContent.indexOf('>') === 0) return
+		if (lineContent.indexOf(';namespace ') === 0) {
+			const nameSpace = line.substring(11, line.length)
+			return nameSpace
+		}
+	}
+	return ''
+}
+
 const compile = ({className, nameSpace, source}, $includes) => {
 	const $data = {} // varname: {type, default, handlers}
 	const $refs = [] // {type, innerName, *name}
@@ -616,13 +630,15 @@ const singleFileWalker = ({file, outFile}, {verbose, dryrun}) => {
 
 		const fileName = path.basename(filePath)
 		const className = camelCase(fileName, {pascalCase: true})
+		const nameSpace = checkNameSpace(source)
 
 		if (verbose || dryrun) {
 			console.log('[V] File name:', fileName)
 			console.log('[V] Generated class name:', className)
+			console.log('[V] Generated namesace:', nameSpace)
 		}
 
-		files.push({className, source})
+		files.push({className, nameSpace, source})
 
 		if (verbose || dryrun) console.log('[V] Generating header file to:', realOutPath)
 		if (dryrun) {
