@@ -23,3 +23,6 @@ node_modules/
 
 .DS_Store
 /dist.zip
+
+# Qt Creator
+template/*.pro.user
