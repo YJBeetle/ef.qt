@@ -636,7 +636,7 @@ const singleFileWalker = ({file, outFile}, {verbose, dryrun}) => {
 		if (err) throw err
 		console.log('Processing', filePath, '...')
 
-		const fileName = path.basename(filePath)
+		const fileName = path.basename(filePath).split('.')[0]
 		const className = camelCase(fileName, {pascalCase: true})
 		const nameSpace = checkNameSpace(source)
 
