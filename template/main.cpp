@@ -16,7 +16,7 @@
 #include <QGraphicsOpacityEffect>
 #include <cmath>
 
-#include "ef.hpp"
+#include "ef_MainWindow.hpp"
 
 int main(int argc, char **argv) {
 	QApplication app(argc, argv);
