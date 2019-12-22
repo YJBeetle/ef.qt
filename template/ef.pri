@@ -7,6 +7,7 @@ for(file, DISTFILES){
                 targetName = ef_$${fileBaseNameNoExt}.hpp
 
                 $${targetName}.commands = efqt generate -f $$PWD/$${file} -o $$targetName
+                $${targetName}.depends = $$PWD/$${file}
 
                 QMAKE_EXTRA_TARGETS += $${targetName}
 
