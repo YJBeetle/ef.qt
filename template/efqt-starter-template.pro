@@ -26,7 +26,7 @@ HEADERS += \
 RESOURCES += \
 	resources.qrc
 
-EFML += \
+DISTFILES += \
 	MainWindow.eft
 
 # Default rules for deployment.

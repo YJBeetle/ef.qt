@@ -1,12 +1,15 @@
-for(file, EFML){
+for(file, DISTFILES){
         fileBaseName = $$basename(file)
-        fileBaseNameNoExt = $$section(fileBaseName, ., 0, -2)
+        fileBaseNameExt = $$section(fileBaseName, ., -1, -1)
+        equals(fileBaseNameExt, 'eft') {
+                fileBaseNameNoExt = $$section(fileBaseName, ., 0, -2)
 
-        targetName = ef_$${fileBaseNameNoExt}.hpp
+                targetName = ef_$${fileBaseNameNoExt}.hpp
 
-        $${targetName}.commands = efqt generate -f $$PWD/$${file} -o $$targetName
+                $${targetName}.commands = efqt generate -f $$PWD/$${file} -o $$targetName
 
-        QMAKE_EXTRA_TARGETS += $${targetName}
+                QMAKE_EXTRA_TARGETS += $${targetName}
 
-        PRE_TARGETDEPS += $${targetName}
+                PRE_TARGETDEPS += $${targetName}
+        }
 }
