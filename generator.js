@@ -473,7 +473,9 @@ ${nameSpace ? `namespace ${nameSpace} {` : ''}
 		}
 
 	public:
-		${className}() {
+		explicit ${className}(QWidget *parent = nullptr) :
+			${$widgets[0].type}(parent)
+		{
 			__init_widgets();
 			__init_refs();
 			__init_value_subscribers();
