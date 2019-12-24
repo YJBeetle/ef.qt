@@ -514,6 +514,20 @@ const checkNameSpace = (source) => {
 	return ''
 }
 
+const checkClassName = (source) => {
+	const lines = source.split(/\r?\n/)
+
+	for (let line of lines) {
+		const lineContent = line.trim()
+		if (lineContent.indexOf('>') === 0) return
+		if (lineContent.indexOf(';classname ') === 0) {
+			const className = line.substring(11, line.length)
+			return className
+		}
+	}
+	return ''
+}
+
 const compile = ({className, nameSpace, source}, $includes) => {
 	const $data = {} // varname: {type, default, handlers}
 	const $refs = [] // {type, innerName, *name}
@@ -639,7 +653,9 @@ const singleFileWalker = ({file, outFile}, {verbose, dryrun}) => {
 		console.log('Processing', filePath, '...')
 
 		const fileName = path.basename(filePath).split('.')[0]
-		const className = camelCase(fileName, {pascalCase: true})
+		let className = checkClassName(source)
+		if(!className)
+			className = camelCase(fileName, {pascalCase: true})
 		const nameSpace = checkNameSpace(source)
 
 		if (verbose || dryrun) {
